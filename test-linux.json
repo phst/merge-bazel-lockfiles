@@ -1,0 +1,23 @@
+{
+  "lockFileVersion": 3,
+  "moduleFileHash": "abc",
+  "flags": {},
+  "moduleExtensions": {
+    "label-1": {
+      "general": {
+        "bzlTransitiveDigest": "def"
+      }
+    },
+    "label-2": {
+      "general": {
+        "bzlTransitiveDigest": "ghi"
+      },
+      "os:linux,arch:amd64": {
+        "bzlTransitiveDigest": "jkl"
+      },
+      "os:osx,arch:amd64": {
+        "bzlTransitiveDigest": "mno"
+      }
+    }
+  }
+}

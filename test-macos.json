@@ -1,0 +1,24 @@
+{
+  "lockFileVersion": 3,
+  "moduleFileHash": "opq",
+  "flags": {
+    "foo": [
+      "bar"
+    ]
+  },
+  "moduleExtensions": {
+    "label-1": {
+      "general": {
+        "bzlTransitiveDigest": "rst"
+      }
+    },
+    "label-2": {
+      "general": {
+        "bzlTransitiveDigest": "uvw"
+      },
+      "os:osx,arch:amd64": {
+        "bzlTransitiveDigest": "xyz"
+      }
+    }
+  }
+}

@@ -12,4 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-/__pycache__/
+.POSIX:
+.SUFFIXES:
+
+SHELL = /bin/sh
+PYTHON = python3
+PYLINT = pylint
+PYTYPE = pytype
+
+all:
+	$(PYTHON) -m unittest
+	$(PYLINT) -- *.py
+	$(PYTYPE) -- *.py
