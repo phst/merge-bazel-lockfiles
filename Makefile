@@ -19,8 +19,10 @@ SHELL = /bin/sh
 PYTHON = python3
 PYLINT = pylint
 PYTYPE = pytype
+ADDLICENSE = addlicense
 
 all:
 	$(PYTHON) -m unittest
 	$(PYLINT) -- *.py
 	$(PYTYPE) -- *.py
+	$(ADDLICENSE) --check --ignore=.dir-locals.el -- .
