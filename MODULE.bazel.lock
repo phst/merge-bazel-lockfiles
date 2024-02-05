@@ -1,6 +1,6 @@
 {
   "lockFileVersion": 3,
-  "moduleFileHash": "42da17bad526fb3d4ceea72f3f4d489fa67060b595b817d07203add78752924a",
+  "moduleFileHash": "4e7c5e6e19078193d269751142104975e1e829820e04af39f9deee95bc477591",
   "flags": {
     "cmdRegistries": [
       "https://bcr.bazel.build/"
@@ -17,10 +17,10 @@
   },
   "moduleDepGraph": {
     "<root>": {
-      "name": "",
+      "name": "phst_merge_bazel_lockfiles",
       "version": "",
       "key": "<root>",
-      "repoName": "",
+      "repoName": "phst_merge_bazel_lockfiles",
       "executionPlatformsToRegister": [],
       "toolchainsToRegister": [],
       "extensionUsages": [],
