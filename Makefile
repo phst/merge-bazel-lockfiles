@@ -17,12 +17,14 @@
 
 SHELL = /bin/sh
 PYTHON = python3
+BAZEL = bazel
 PYLINT = pylint
 PYTYPE = pytype
 ADDLICENSE = addlicense
 
 all:
 	$(PYTHON) -m unittest
+	$(BAZEL) test -- //...
 	$(PYLINT) -- *.py
 	$(PYTYPE) -- *.py
 	$(ADDLICENSE) --check --ignore=.dir-locals.el -- .

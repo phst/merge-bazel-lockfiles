@@ -12,5 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-/__pycache__/
-/bazel-*
+py_binary(
+    name = "merge",
+    srcs = ["merge.py"],
+    python_version = "PY3",
+    srcs_version = "PY3",
+)
+
+py_test(
+    name = "test",
+    timeout = "short",
+    srcs = ["test.py"],
+    data = glob(["test-*.json"]),
+    python_version = "PY3",
+    srcs_version = "PY3",
+    deps = [":merge"],
+)
