@@ -36,7 +36,7 @@ class Test(unittest.TestCase):
               (base / 'test-macos.json').open('r', encoding='utf-8') as macos):
             merge.merge(output=output, linux=linux, macos=macos)
         self.assertEqual(output.getvalue(),
-                         (base / 'test-merged.json').read_text().rstrip())
+                         (base / 'test-merged.json').read_text())
 
 
 if __name__ == '__main__':

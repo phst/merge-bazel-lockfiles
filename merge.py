@@ -73,6 +73,7 @@ def merge(*, output: TextIO,
                     lock.setdefault(
                         exts_key, {}).setdefault(label, {})[platform] = val
     json.dump(lock, output, indent=2)
+    output.write('\n')
 
 
 if __name__ == '__main__':
