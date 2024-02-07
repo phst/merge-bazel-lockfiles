@@ -16,7 +16,6 @@
 
 """Unit tests for merge.py."""
 
-import io
 import pathlib
 import unittest
 
@@ -30,12 +29,12 @@ class Test(unittest.TestCase):
 
     def test_merge(self) -> None:
         """Unit test for the merge function."""
-        output = io.StringIO()
         base = pathlib.Path(__file__).parent
-        with ((base / 'test-linux.json').open('r', encoding='utf-8') as linux,
-              (base / 'test-macos.json').open('r', encoding='utf-8') as macos):
-            merge.merge(output=output, linux=linux, macos=macos)
-        self.assertEqual(output.getvalue(),
+        output = merge.merge(
+            linux=(base / 'test-linux.json').read_text(encoding='utf-8'),
+            macos=(base / 'test-macos.json').read_text(encoding='utf-8'),
+        )
+        self.assertEqual(output,
                          (base / 'test-merged.json').read_text())
 
 

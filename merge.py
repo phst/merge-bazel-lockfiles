@@ -17,63 +17,57 @@
 """Tool to merge MODULE.bazel.lock files."""
 
 import argparse
-import contextlib
 import json
-import sys
-from typing import Optional, TextIO
+import pathlib
+from typing import Optional
 
 
-def merge(*, output: TextIO,
-          linux: Optional[TextIO] = None,
-          macos: Optional[TextIO] = None,
-          windows: Optional[TextIO] = None) -> None:
+def merge(*,
+          linux: Optional[str] = None,
+          macos: Optional[str] = None,
+          windows: Optional[str] = None) -> str:
     """Merge multiple MODULE.bazel.lock files into one.
 
     Args:
-      output: where to write the merged file
       linux, macos, windows: input files for GNU/Linux, macOS, and Windows,
          respectively; all are optional, but at least one must be present
+
+    Returns:
+      the merged lockfile content
     """
     inputs = (
         (linux, {'os:linux'}),
         (macos, {'os:macos', 'os:osx'}),
         (windows, {'os:windows'}),
     )
-    inputs = [(stream, keys) for (stream, keys) in inputs if stream]
+    inputs = [(file, keys) for (file, keys) in inputs if file]
     if not inputs:
         raise ValueError('no input streams given')
     (first, _), *rest = inputs
-    lock = json.load(first)
+    lock = json.loads(first)
     exts_key = 'moduleExtensions'
-    for (stream, keys) in rest:
-        for label, ext in json.load(stream)[exts_key].items():
+    for (file, keys) in rest:
+        for label, ext in json.loads(file)[exts_key].items():
             for platform, val in ext.items():
                 if not set(platform.split(',')).isdisjoint(keys):
                     lock.setdefault(
                         exts_key, {}).setdefault(label, {})[platform] = val
-    json.dump(lock, output, indent=2)
-    output.write('\n')
+    return json.dumps(lock, indent=2) + '\n'
 
 
 def _main() -> None:
     parser = argparse.ArgumentParser(allow_abbrev=False)
-    parser.add_argument('--linux', '-l',
-                        type=argparse.FileType(mode='r', encoding='utf-8'))
-    parser.add_argument('--macos', '-m',
-                        type=argparse.FileType(mode='r', encoding='utf-8'))
-    parser.add_argument('--windows', '-w',
-                        type=argparse.FileType(mode='r', encoding='utf-8'))
-    parser.add_argument('--output', '-o',
-                        type=argparse.FileType(mode='w', encoding='utf-8'))
+    parser.add_argument('--linux', '-l', type=_input)
+    parser.add_argument('--macos', '-m', type=_input)
+    parser.add_argument('--windows', '-w', type=_input)
+    parser.add_argument('--output', '-o', type=pathlib.Path, required=True)
     args = parser.parse_args()
-    with contextlib.ExitStack() as stack:
-        for file in (args.linux, args.macos, args.windows, args.output):
-            if file:
-                stack.enter_context(file)
-        merge(output=args.output or sys.stdout,
-              linux=args.linux,
-              macos=args.macos,
-              windows=args.windows)
+    output = merge(linux=args.linux, macos=args.macos, windows=args.windows)
+    args.output.write_text(output, encoding='utf-8')
+
+
+def _input(string: str) -> str:
+    return pathlib.Path(string).read_text(encoding='utf-8')
 
 
 if __name__ == '__main__':
