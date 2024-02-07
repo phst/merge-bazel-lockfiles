@@ -23,27 +23,6 @@ import sys
 from typing import Optional, TextIO
 
 
-def _main() -> None:
-    parser = argparse.ArgumentParser(allow_abbrev=False)
-    parser.add_argument('--linux', '-l',
-                        type=argparse.FileType(mode='r', encoding='utf-8'))
-    parser.add_argument('--macos', '-m',
-                        type=argparse.FileType(mode='r', encoding='utf-8'))
-    parser.add_argument('--windows', '-w',
-                        type=argparse.FileType(mode='r', encoding='utf-8'))
-    parser.add_argument('--output', '-o',
-                        type=argparse.FileType(mode='w', encoding='utf-8'))
-    args = parser.parse_args()
-    with contextlib.ExitStack() as stack:
-        for file in (args.linux, args.macos, args.windows, args.output):
-            if file:
-                stack.enter_context(file)
-        merge(output=args.output or sys.stdout,
-              linux=args.linux,
-              macos=args.macos,
-              windows=args.windows)
-
-
 def merge(*, output: TextIO,
           linux: Optional[TextIO] = None,
           macos: Optional[TextIO] = None,
@@ -74,6 +53,27 @@ def merge(*, output: TextIO,
                         exts_key, {}).setdefault(label, {})[platform] = val
     json.dump(lock, output, indent=2)
     output.write('\n')
+
+
+def _main() -> None:
+    parser = argparse.ArgumentParser(allow_abbrev=False)
+    parser.add_argument('--linux', '-l',
+                        type=argparse.FileType(mode='r', encoding='utf-8'))
+    parser.add_argument('--macos', '-m',
+                        type=argparse.FileType(mode='r', encoding='utf-8'))
+    parser.add_argument('--windows', '-w',
+                        type=argparse.FileType(mode='r', encoding='utf-8'))
+    parser.add_argument('--output', '-o',
+                        type=argparse.FileType(mode='w', encoding='utf-8'))
+    args = parser.parse_args()
+    with contextlib.ExitStack() as stack:
+        for file in (args.linux, args.macos, args.windows, args.output):
+            if file:
+                stack.enter_context(file)
+        merge(output=args.output or sys.stdout,
+              linux=args.linux,
+              macos=args.macos,
+              windows=args.windows)
 
 
 if __name__ == '__main__':
