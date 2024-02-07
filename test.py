@@ -30,12 +30,21 @@ class Test(unittest.TestCase):
     def test_merge(self) -> None:
         """Unit test for the merge function."""
         base = pathlib.Path(__file__).parent
-        output = merge.merge(
-            linux=(base / 'test-linux.json').read_text(encoding='utf-8'),
-            macos=(base / 'test-macos.json').read_text(encoding='utf-8'),
-        )
+        output = merge.merge({
+            merge.Platform(merge.System.LINUX, merge.Architecture.AMD64):
+                (base / 'test-linux.json').read_text(encoding='utf-8'),
+            merge.Platform(merge.System.DARWIN, merge.Architecture.ARM64):
+                (base / 'test-macos.json').read_text(encoding='utf-8'),
+        })
         self.assertEqual(output,
                          (base / 'test-merged.json').read_text())
+
+    def test_current_platform(self) -> None:
+        """Unit test for Platform.current."""
+        plat = merge.Platform.current()
+        self.assertIsNotNone(plat)
+        self.assertIsNotNone(plat.system)
+        self.assertIsNotNone(plat.arch)
 
 
 if __name__ == '__main__':
