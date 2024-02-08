@@ -73,6 +73,14 @@ class Platform:
         """Returns the current platform."""
         return Platform(System.current(), Architecture.current())
 
+    @classmethod
+    def parse(cls, string: str) -> 'Platform':
+        system, _, arch = string.partition('/')
+        return Platform(System[system], Architecture[arch])
+
+    def __str__(self) -> str:
+        return f'{self.system.name}/{self.arch.name}'
+
 
 def merge(inputs: Mapping[Platform, str]) -> str:
     """Merge multiple MODULE.bazel.lock files into one.
@@ -140,12 +148,17 @@ def _main() -> None:
     for system in System:
         for arch in Architecture:
             name = f'--{system.name}-{arch.name}'.lower()
-            parser.add_argument(name, type=_Input(cwd, Platform(system, arch)))
-    parser.add_argument('--local', '-l', type=_Input(cwd, Platform.current()))
+            parser.add_argument(name, type=_Path(cwd),
+                                dest=str(Platform(system, arch)))
+    parser.add_argument('--local', '-l', type=_Path(cwd),
+                        dest=str(Platform.current()))
     parser.add_argument('--output', '-o', type=_Path(cwd), required=True)
     args = parser.parse_args()
-    inputs: dict[Platform, str] = dict(
-        val for key, val in vars(args).items() if key != 'output' and val)
+    inputs: dict[Platform, str] = {
+        Platform.parse(key): val.read_text(encoding='utf-8')
+        for key, val in vars(args).items()
+        if val and key != 'output'
+    }
     output = merge(inputs)
     args.output.write_text(output, encoding='utf-8')
 
@@ -156,15 +169,6 @@ class _Path:  # pylint: disable=too-few-public-methods
 
     def __call__(self, string: str) -> pathlib.Path:
         return self._cwd / string
-
-
-class _Input:  # pylint: disable=too-few-public-methods
-    def __init__(self, cwd: pathlib.Path, plat: Platform):
-        self._cwd = cwd
-        self._plat = plat
-
-    def __call__(self, string: str) -> tuple[Platform, str]:
-        return self._plat, (self._cwd / string).read_text(encoding='utf-8')
 
 
 if __name__ == '__main__':
