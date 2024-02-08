@@ -22,6 +22,7 @@ import dataclasses
 import enum
 import functools
 import json
+import os
 import pathlib
 import platform
 from typing import Any, Optional
@@ -133,13 +134,15 @@ def _parse(string: str) -> tuple[Optional[System], Optional[Architecture]]:
 
 
 def _main() -> None:
+    cwd = pathlib.Path(
+        os.getenv('BUILD_WORKING_DIRECTORY') or pathlib.Path.cwd())
     parser = argparse.ArgumentParser(allow_abbrev=False)
     for system in System:
         for arch in Architecture:
             name = f'--{system.name}-{arch.name}'.lower()
-            parser.add_argument(name, type=_Input(Platform(system, arch)))
-    parser.add_argument('--local', '-l', type=_Input(Platform.current()))
-    parser.add_argument('--output', '-o', type=pathlib.Path, required=True)
+            parser.add_argument(name, type=_Input(cwd, Platform(system, arch)))
+    parser.add_argument('--local', '-l', type=_Input(cwd, Platform.current()))
+    parser.add_argument('--output', '-o', type=_Path(cwd), required=True)
     args = parser.parse_args()
     inputs: dict[Platform, str] = dict(
         val for key, val in vars(args).items() if key != 'output' and val)
@@ -147,12 +150,21 @@ def _main() -> None:
     args.output.write_text(output, encoding='utf-8')
 
 
+class _Path:  # pylint: disable=too-few-public-methods
+    def __init__(self, cwd: pathlib.Path):
+        self._cwd = cwd
+
+    def __call__(self, string: str) -> pathlib.Path:
+        return self._cwd / string
+
+
 class _Input:  # pylint: disable=too-few-public-methods
-    def __init__(self, plat: Platform):
+    def __init__(self, cwd: pathlib.Path, plat: Platform):
+        self._cwd = cwd
         self._plat = plat
 
     def __call__(self, string: str) -> tuple[Platform, str]:
-        return self._plat, pathlib.Path(string).read_text(encoding='utf-8')
+        return self._plat, (self._cwd / string).read_text(encoding='utf-8')
 
 
 if __name__ == '__main__':
