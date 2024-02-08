@@ -144,15 +144,16 @@ def _parse(string: str) -> tuple[Optional[System], Optional[Architecture]]:
 def _main() -> None:
     cwd = pathlib.Path(
         os.getenv('BUILD_WORKING_DIRECTORY') or pathlib.Path.cwd())
+    path = lambda s: cwd / s
     parser = argparse.ArgumentParser(allow_abbrev=False)
     for system in System:
         for arch in Architecture:
             name = f'--{system.name}-{arch.name}'.lower()
-            parser.add_argument(name, type=_Path(cwd),
+            parser.add_argument(name, type=path,
                                 dest=str(Platform(system, arch)))
-    parser.add_argument('--local', '-l', type=_Path(cwd),
+    parser.add_argument('--local', '-l', type=path,
                         dest=str(Platform.current()))
-    parser.add_argument('--output', '-o', type=_Path(cwd), required=True)
+    parser.add_argument('--output', '-o', type=path, required=True)
     args = parser.parse_args()
     inputs: dict[Platform, str] = {
         Platform.parse(key): val.read_text(encoding='utf-8')
@@ -161,14 +162,6 @@ def _main() -> None:
     }
     output = merge(inputs)
     args.output.write_text(output, encoding='utf-8')
-
-
-class _Path:  # pylint: disable=too-few-public-methods
-    def __init__(self, cwd: pathlib.Path):
-        self._cwd = cwd
-
-    def __call__(self, string: str) -> pathlib.Path:
-        return self._cwd / string
 
 
 if __name__ == '__main__':
