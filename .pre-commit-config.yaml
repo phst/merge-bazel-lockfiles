@@ -30,7 +30,6 @@ repos:
   - id: check-symlinks
   - id: check-vcs-permalinks
   - id: check-yaml
-  - id: check-yaml
   - id: debug-statements
   - id: destroyed-symlinks
   - id: double-quote-string-fixer
