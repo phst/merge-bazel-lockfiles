@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright 2024 Philipp Stephani
+# Copyright 2024, 2025 Philipp Stephani
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -75,6 +75,7 @@ class Platform:
 
     @classmethod
     def parse(cls, string: str) -> 'Platform':
+        """Parses a platform from a key in MODULE.bazel.lock."""
         system, _, arch = string.partition('/')
         return Platform(System[system], Architecture[arch])
 
@@ -144,7 +145,8 @@ def _parse(string: str) -> tuple[Optional[System], Optional[Architecture]]:
 def _main() -> None:
     cwd = pathlib.Path(
         os.getenv('BUILD_WORKING_DIRECTORY') or pathlib.Path.cwd())
-    path = lambda s: cwd / s
+    def path(s: str) -> pathlib.Path:
+        return cwd / s
     parser = argparse.ArgumentParser(allow_abbrev=False)
     for system in System:
         for arch in Architecture:
