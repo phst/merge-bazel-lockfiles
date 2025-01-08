@@ -1,4 +1,4 @@
-# Copyright 2024 Philipp Stephani
+# Copyright 2024, 2025 Philipp Stephani
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ BAZEL = bazel
 PYLINT = pylint
 PYTYPE = pytype
 ADDLICENSE = addlicense
+BUILDIFIER = buildifier
 
 all:
 	$(PYTHON) -m unittest
@@ -28,3 +29,4 @@ all:
 	$(PYLINT) -- *.py
 	$(PYTYPE) -- *.py
 	$(ADDLICENSE) --check --ignore=.dir-locals.el -- .
+	$(BUILDIFIER) -mode=check -lint=warn -warnings=all -r -- .
