@@ -20,7 +20,6 @@ PYTHON = python3
 BAZEL = bazel
 PYLINT = pylint
 PYTYPE = pytype
-ADDLICENSE = addlicense
 
 all:
 	$(BAZEL) build -- //...
@@ -30,4 +29,3 @@ check: all
 	$(BAZEL) test -- //...
 	$(PYLINT) -- *.py
 	$(PYTYPE) -- *.py
-	$(ADDLICENSE) --check --ignore=.dir-locals.el -- .

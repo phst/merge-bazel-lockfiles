@@ -13,6 +13,7 @@
 # limitations under the License.
 
 load("@buildifier_prebuilt//:rules.bzl", "buildifier_test")
+load("@phst_license_test//:def.bzl", "license_test")
 load("@rules_python//python:defs.bzl", "py_binary", "py_test")
 
 py_binary(
@@ -39,4 +40,11 @@ buildifier_test(
     lint_warnings = ["all"],
     no_sandbox = True,
     workspace = "WORKSPACE.bazel",
+)
+
+license_test(
+    name = "license_test",
+    timeout = "short",
+    ignore = [".dir-locals.el"],
+    marker = "MODULE.bazel",
 )
