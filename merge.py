@@ -56,9 +56,20 @@ class Architecture(enum.Enum):
         return self.value < other.value
 
     @classmethod
+    def parse(cls, string: str) -> 'Architecture':
+        """Parses an architecture name."""
+        archs: dict[str, Architecture] = {
+            'aarch64': cls.ARM64,
+            'arm64': cls.ARM64,
+            'x86_64': cls.AMD64,
+            'amd64': cls.AMD64,
+        }
+        return archs[string]
+
+    @classmethod
     def current(cls) -> 'Architecture':
         """Returns the current architecture."""
-        return Architecture[platform.machine().upper()]
+        return cls.parse(platform.machine())
 
 
 @dataclasses.dataclass(order=True, frozen=True)
@@ -125,12 +136,6 @@ def _parse(string: str) -> tuple[Optional[System], Optional[Architecture]]:
         'osx': System.DARWIN,
         'windows': System.WINDOWS,
     }
-    archs: dict[str, Architecture] = {
-        'aarch64': Architecture.ARM64,
-        'arm64': Architecture.ARM64,
-        'x86_64': Architecture.AMD64,
-        'amd64': Architecture.AMD64,
-    }
     system: Optional[System] = None
     arch: Optional[Architecture] = None
     for piece in string.split(','):
@@ -138,7 +143,7 @@ def _parse(string: str) -> tuple[Optional[System], Optional[Architecture]]:
         if kind == 'os':
             system = systems[val]
         elif kind == 'arch':
-            arch = archs[val]
+            arch = Architecture.parse(val)
     return system, arch
 
 
