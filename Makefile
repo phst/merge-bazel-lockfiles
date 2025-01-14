@@ -21,7 +21,6 @@ BAZEL = bazel
 PYLINT = pylint
 PYTYPE = pytype
 ADDLICENSE = addlicense
-BUILDIFIER = buildifier
 
 all:
 	$(BAZEL) build -- //...
@@ -32,4 +31,3 @@ check: all
 	$(PYLINT) -- *.py
 	$(PYTYPE) -- *.py
 	$(ADDLICENSE) --check --ignore=.dir-locals.el -- .
-	$(BUILDIFIER) -mode=check -lint=warn -warnings=all -r -- .

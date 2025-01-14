@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+load("@buildifier_prebuilt//:rules.bzl", "buildifier_test")
 load("@rules_python//python:defs.bzl", "py_binary", "py_test")
 
 py_binary(
@@ -29,4 +30,13 @@ py_test(
     python_version = "PY3",
     srcs_version = "PY3",
     deps = [":merge"],
+)
+
+buildifier_test(
+    name = "buildifier_test",
+    timeout = "short",
+    lint_mode = "warn",
+    lint_warnings = ["all"],
+    no_sandbox = True,
+    workspace = "WORKSPACE.bazel",
 )
