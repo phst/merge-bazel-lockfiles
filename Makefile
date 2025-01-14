@@ -24,6 +24,9 @@ ADDLICENSE = addlicense
 BUILDIFIER = buildifier
 
 all:
+	$(BAZEL) build -- //...
+
+check: all
 	$(PYTHON) -m unittest
 	$(BAZEL) test -- //...
 	$(PYLINT) -- *.py
