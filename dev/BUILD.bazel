@@ -12,30 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("@rules_python//python:defs.bzl", "py_binary", "py_test")
+load("@buildifier_prebuilt//:rules.bzl", "buildifier_test")
+load("@phst_license_test//:def.bzl", "license_test")
 
-py_binary(
-    name = "merge",
-    srcs = ["merge.py"],
-    python_version = "PY3",
-    srcs_version = "PY3",
-)
-
-py_test(
-    name = "test",
+buildifier_test(
+    name = "buildifier_test",
     timeout = "short",
-    srcs = ["test.py"],
-    data = glob(["test-*.json"]),
-    python_version = "PY3",
-    srcs_version = "PY3",
-    deps = [":merge"],
+    lint_mode = "warn",
+    lint_warnings = ["all"],
+    no_sandbox = True,
+    workspace = "//:WORKSPACE.bazel",
 )
 
-exports_files(
-    [
-        # keep sorted
-        "MODULE.bazel",
-        "WORKSPACE.bazel",
-    ],
-    visibility = ["//dev:__pkg__"],
+license_test(
+    name = "license_test",
+    timeout = "short",
+    ignore = [".dir-locals.el"],
+    marker = "//:MODULE.bazel",
 )
