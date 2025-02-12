@@ -18,14 +18,15 @@
 SHELL = /bin/sh
 PYTHON = python3
 BAZEL = bazel
+BAZELFLAGS =
 PYLINT = pylint
 PYTYPE = pytype
 
 all:
-	$(BAZEL) build -- //...
+	$(BAZEL) build $(BAZELFLAGS) -- //...
 
 check: all
 	$(PYTHON) -m unittest
-	$(BAZEL) test -- //...
+	$(BAZEL) test $(BAZELFLAGS) -- //...
 	$(PYLINT) -- *.py
 	$(PYTYPE) -- *.py
