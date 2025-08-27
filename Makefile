@@ -20,7 +20,7 @@ PYTHON = python3
 BAZEL = bazel
 BAZELFLAGS =
 PYLINT = pylint
-PYTYPE = pytype
+MYPY = mypy
 
 all:
 	$(BAZEL) build $(BAZELFLAGS) -- //...
@@ -29,4 +29,4 @@ check: all
 	$(PYTHON) -m unittest
 	$(BAZEL) test $(BAZELFLAGS) -- //...
 	$(PYLINT) -- *.py
-	$(PYTYPE) -- *.py
+	$(MYPY) -- *.py
