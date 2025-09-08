@@ -14,7 +14,7 @@
 
 module(name = "phst_merge_bazel_lockfiles")
 
-bazel_dep(name = "rules_python", version = "1.5.3")
+bazel_dep(name = "rules_python", version = "1.6.1")
 
 bazel_dep(name = "buildifier_prebuilt", version = "8.2.0.2", dev_dependency = True)
 bazel_dep(name = "phst_license_test", version = "0", dev_dependency = True)
