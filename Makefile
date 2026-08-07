@@ -22,6 +22,7 @@ BAZEL = bazel
 BAZELFLAGS =
 PYLINT = pylint
 MYPY = mypy
+ADDLICENSE = addlicense
 
 all:
 	$(BAZEL) build $(BAZELFLAGS) -- //...
@@ -31,3 +32,4 @@ check: all
 	$(BAZEL) test $(BAZELFLAGS) -- //...
 	$(PYLINT) -- *.py
 	$(MYPY) -- *.py
+	$(ADDLICENSE) --check --ignore=.dir-locals.el -- .

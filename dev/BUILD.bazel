@@ -1,4 +1,4 @@
-# Copyright 2024, 2025 Philipp Stephani
+# Copyright 2024, 2025, 2026 Philipp Stephani
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
 # limitations under the License.
 
 load("@buildifier_prebuilt//:rules.bzl", "buildifier_test")
-load("@phst_license_test//:def.bzl", "license_test")
 
 buildifier_test(
     name = "buildifier_test",
@@ -22,11 +21,4 @@ buildifier_test(
     lint_warnings = ["all"],
     no_sandbox = True,
     workspace = "//:WORKSPACE.bazel",
-)
-
-license_test(
-    name = "license_test",
-    timeout = "short",
-    ignore = [".dir-locals.el"],
-    marker = "//:MODULE.bazel",
 )
