@@ -14,6 +14,7 @@
 
 .POSIX:
 .PHONY: all check
+.PHONY: MODULE.bazel.lock
 .SUFFIXES:
 
 SHELL = /bin/sh
@@ -24,7 +25,7 @@ PYLINT = pylint
 MYPY = mypy
 ADDLICENSE = addlicense
 
-all:
+all: MODULE.bazel.lock
 	$(BAZEL) build $(BAZELFLAGS) -- //...
 
 check: all
@@ -33,3 +34,6 @@ check: all
 	$(PYLINT) -- *.py
 	$(MYPY) -- *.py
 	$(ADDLICENSE) --check --ignore=.dir-locals.el -- .
+
+MODULE.bazel.lock:
+	$(BAZEL) mod graph > /dev/null
